@@ -1,6 +1,7 @@
 # E-Commerce Sales Analysis
 
-Refactored exploratory data analysis of e-commerce performance. The analysis
+Refactored exploratory data analysis of e-commerce performance, available as
+both a narrative notebook and an interactive Streamlit dashboard. The analysis
 measures revenue, product, geographic, and customer-experience metrics for a
 configurable period (default: full-year 2023 compared with 2022).
 
@@ -8,14 +9,16 @@ configurable period (default: full-year 2023 compared with 2022).
 
 | File | Purpose |
 | --- | --- |
+| `dashboard.py` | Interactive Streamlit dashboard (KPIs, charts, date filter) |
 | `EDA_Refactored.ipynb` | Narrative analysis notebook with documentation and charts |
 | `data_loader.py` | Loads, cleans, merges, and period-filters the raw data |
 | `business_metrics.py` | Pure metric calculations (revenue, products, geography, experience) |
 | `requirements.txt` | Python dependencies |
 | `ecommerce_data/` | Raw `*_dataset.csv` source files |
 
-The notebook stays focused on business questions: all data preparation lives
-in `data_loader.py` and all metric logic lives in `business_metrics.py`.
+Both the notebook and the dashboard stay focused on business questions: all
+data preparation lives in `data_loader.py` and all metric logic lives in
+`business_metrics.py`.
 
 ## Setup
 
@@ -23,7 +26,33 @@ in `data_loader.py` and all metric logic lives in `business_metrics.py`.
 pip install -r requirements.txt
 ```
 
-## Running the analysis
+## Running the dashboard
+
+Launch the interactive dashboard with:
+
+```bash
+streamlit run dashboard.py
+```
+
+The dashboard opens in your browser and is laid out as:
+
+- **Header:** title on the left, a global date-range filter on the right. The
+  filter drives every KPI and chart, and metrics are compared against the
+  equivalent prior-year period.
+- **KPI row:** Total Revenue, Monthly Growth, Average Order Value, and Total
+  Orders. Total Revenue, Average Order Value, and Total Orders carry a trend
+  indicator versus the previous period (green for favourable, red for
+  unfavourable), shown to two decimal places.
+- **Charts (2x2):** monthly revenue trend (solid current vs dashed previous
+  period), top 10 categories by revenue (blue gradient), revenue by state (US
+  choropleth), and average review score by delivery-time bucket.
+- **Bottom row:** average delivery time (with a trend indicator, where faster
+  is favourable) and the average review score shown as a large number with
+  stars.
+
+All charts are built with Plotly and update live as the date filter changes.
+
+## Running the analysis notebook
 
 Open `EDA_Refactored.ipynb` in Jupyter and run all cells, or execute it
 headlessly:

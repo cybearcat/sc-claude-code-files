@@ -187,6 +187,37 @@ class EcommerceData:
         return orders
 
 
+def filter_by_date(
+    df: pd.DataFrame,
+    start,
+    end,
+    date_col: str = "order_purchase_timestamp",
+) -> pd.DataFrame:
+    """Filter a DataFrame to an inclusive ``[start, end]`` date range.
+
+    Parameters
+    ----------
+    df:
+        Input DataFrame containing ``date_col`` as datetimes.
+    start, end:
+        Range bounds. Anything accepted by :func:`pandas.Timestamp` works
+        (``datetime.date``, string, Timestamp). The range is inclusive of the
+        whole ``end`` day.
+    date_col:
+        Name of the timestamp column to filter on.
+
+    Returns
+    -------
+    pandas.DataFrame
+        Filtered copy of the input.
+    """
+    start_ts = pd.Timestamp(start)
+    # Include the full end day even when only a date is supplied.
+    end_ts = pd.Timestamp(end) + pd.Timedelta(days=1) - pd.Timedelta(seconds=1)
+    mask = (df[date_col] >= start_ts) & (df[date_col] <= end_ts)
+    return df[mask].copy()
+
+
 def filter_by_period(
     df: pd.DataFrame,
     year: Optional[int] = None,
