@@ -66,6 +66,35 @@ def monthly_revenue(df: pd.DataFrame) -> pd.Series:
     return df.groupby(MONTH_COL)[PRICE_COL].sum()
 
 
+def revenue_time_series(
+    df: pd.DataFrame,
+    freq: str = "M",
+    date_col: str = "order_purchase_timestamp",
+) -> pd.Series:
+    """Revenue aggregated into an ordered calendar time series.
+
+    Unlike :func:`monthly_revenue` (which groups by month number 1-12), this
+    groups by an actual calendar period so the index is time-ordered even when
+    a date range spans multiple years.
+
+    Parameters
+    ----------
+    df:
+        Sales rows containing ``date_col`` and ``price``.
+    freq:
+        Pandas period frequency (e.g. ``"M"`` for month).
+    date_col:
+        Timestamp column to derive the period from.
+
+    Returns
+    -------
+    pandas.Series
+        Revenue indexed by :class:`pandas.Period`, sorted chronologically.
+    """
+    periods = df[date_col].dt.to_period(freq)
+    return df.groupby(periods)[PRICE_COL].sum().sort_index()
+
+
 def monthly_growth(df: pd.DataFrame) -> pd.Series:
     """Month-over-month fractional revenue change.
 
